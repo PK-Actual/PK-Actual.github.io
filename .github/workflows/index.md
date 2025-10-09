@@ -2,4 +2,4 @@ layout: page
 title: "index"
 permalink: /index/
 
-Test .md file
+Test .md file another one
