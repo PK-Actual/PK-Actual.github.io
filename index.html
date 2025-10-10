@@ -2,22 +2,79 @@
 <html>
     <head>
         <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <div id="main">
             <h3>This is my first widget.</h3>
             <h3>NOT BHEDDD! GOOD SOIZEEE!</h3>
             <span id="labelText"></span>
-            <input type="text" id="userInput">
+            <input type="text" id="userInput" value="">
         </div>
         <script type="text/javascript">
+            
+            var inputField = $('#userInput');
+            
+            function customWidget() {
+                this.init = init;
+                this.fillConditionValue = fillConditionValue;
+                this.getData = getData;
+                this.getRandomInt = getRandomInt;
+
+                // USED FOR TESTING
+                function getRandomInt(max) {
+                    return Math.floor(Math.random() * max);
+                }
+
+                function init(formData){
+                    input.on('change', function(){
+                        JFCustomWidget.sendData(getData());
+                        JFCustomWidget.hideWidgetError();
+                    }
+                }
+
+                function fillConditionValue(data) {
+                   var inputValue = data.value || '';
+                   inputField.val(inputValue);
+                   JFCustomWidget.hideWidgetError();
+                  customWidget(inputValue)
+                 }
+
+                function testCall(){
+                    var randomValue = getRandomValue(2);
+                    console.log(randomValue);
+
+                    if(randomValue == 1){
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+
+                function getData(){
+                    var inputValue = inputField.val();
+                    var isValid = testCall(inputValue)
+                    console.log("isValid", isValid)
+                    return {
+                    value: inputValue,
+                    valid: !!inputValue
+                    }
+                }
+            }
+            
+            
             //always subscribe to ready event and implement widget related code
             //inside callback function , it is the best practice while developing widgets
-            JFCustomWidget.subscribe("ready", function(){
+            JFCustomWidget.subscribe("ready", function(data){
+
+                // Default, part of main widget template
                 var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
-                var optionSelected = JFCustomWidget.getWidgetSetting('Param1');
-                console.log(optionSelected);
                 document.getElementById('labelText').innerHTML = label;
+
+                var widget = new customWidget();
+                widget.init(data);
+                
+                
                 //subscribe to form submit event
                 JFCustomWidget.subscribe("submit", function(){
                     var msg = {
@@ -28,6 +85,8 @@
                     }
                     // send value to JotForm
                     JFCustomWidget.sendSubmit(msg);
+
+                    JFCustomWidget.subscribe('populate', widget.fillConditionValue);
                 });
             });
         </script>
