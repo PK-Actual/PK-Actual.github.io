@@ -11,84 +11,75 @@
             <span id="labelText"></span>
             <input type="text" id="userInput" value="">
         </div>
-        <script type="text/javascript">
-            
-            var inputField = $('#userInput');
-            
-            function customWidget() {
-                this.init = init;
-                this.fillConditionValue = fillConditionValue;
-                this.getData = getData;
-                this.getRandomInt = getRandomInt;
+<script type="text/javascript">
+        
+        var input = $('#sourcePostCode');
+
+        function postcodeValidator() {
+         // exposed functions
+            this.init = init;
+            this.getData = getData;
+            this.fillConditionValue = fillConditionValue;
+         
+         // initialization of the widget
+            function init(formData) {
+           
+           // send data to Jotform on change input
+                input.on('change', function() {
+                    JFCustomWidget.sendData(getData());
+                    JFCustomWidget.hideWidgetError();
+                }); 
+            }
 
                 // USED FOR TESTING
                 function getRandomInt(max) {
                     return Math.floor(Math.random() * max);
                 }
-
-                function init(formData){
-                    input.on('change', function(){
-                        JFCustomWidget.sendData(getData());
-                        JFCustomWidget.hideWidgetError();
-                    }
-                }
-
+         
+                // fill the value set by conditions
                 function fillConditionValue(data) {
-                   var inputValue = data.value || '';
-                   inputField.val(inputValue);
-                   JFCustomWidget.hideWidgetError();
-                  customWidget(inputValue)
-                 }
-
-                function testCall(){
-                    var randomValue = getRandomValue(2);
-                    console.log(randomValue);
-
-                    if(randomValue == 1){
-                        return true
-                    } else {
-                        return false
-                    }
+                    var inputValue = data.value || '';
+                    input.val(inputValue);
+                    JFCustomWidget.hideWidgetError();
+                    validatePostcode(inputValue)
                 }
 
-                function getData(){
-                    var inputValue = inputField.val();
-                    var isValid = testCall(inputValue)
+                function validatePostcode(inputValue){
+                    var int_rand = getRandomInt(2);
+                    if(int_rand == 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+         
+                // get widget data
+                function getData() {
+                    var inputValue = input.val();
+                    var isValid = validatePostcode(inputValue)
                     console.log("isValid", isValid)
                     return {
-                    value: inputValue,
-                    valid: !!inputValue
+                        value: inputValue,
+                        valid: !!inputValue
                     }
                 }
             }
-            
-            
-            //always subscribe to ready event and implement widget related code
-            //inside callback function , it is the best practice while developing widgets
-            JFCustomWidget.subscribe("ready", function(data){
+        // always subscribe to ready event and implement widget related code
+        // inside callback function , it is the best practice while developing widgets
+        JFCustomWidget.subscribe("ready", function(data) {
 
-                // Default, part of main widget template
-                var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
-                document.getElementById('labelText').innerHTML = label;
+          var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
+          document.getElementById('labelText').innerHTML = label;
+          var widget = new postcodeValidator();
+          widget.init(data);
 
-                var widget = new customWidget();
-                widget.init(data);
-                
-                
-                //subscribe to form submit event
-                JFCustomWidget.subscribe("submit", function(){
-                    var msg = {
-                        //you should valid attribute to data for JotForm
-                        //to be able to use youw widget as required
-                        valid: true,
-                        value: document.getElementById('userInput').value
-                    }
-                    // send value to JotForm
-                    JFCustomWidget.sendSubmit(msg);
-
-                    JFCustomWidget.subscribe('populate', widget.fillConditionValue);
-                });
-            });
+          JFCustomWidget.subscribe("submit", function() {
+            JFCustomWidget.sendSubmit(widget.getData());
+          });
+          
+          JFCustomWidget.subscribe('populate', widget.fillConditionValue);
+        });
+       
         </script>
     </body>
 </html>
