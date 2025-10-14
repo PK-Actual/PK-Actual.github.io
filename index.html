@@ -12,74 +12,37 @@
         <input type="text" id="sourcePostCode" class="form-textbox" value="">
         </div>
 <script type="text/javascript">
+      JFCustomWidgetUtils.domReady(function () {
         
-        var input = $('#sourcePostCode');
+        function DynamicOptionsDropdown() {
+          const params = JFCustomWidget.getWidgetSettings();
+          const department = JFCustomWidget.getWidgetSetting('department');
+          
+          this.getData = getData;
+          this.init = init;
+          
+          function init(widgetSettings) {
+            console.log("hello world", {widgetSettings});
+            console.log({params})
+          }
 
-        function postcodeValidator() {
-         // exposed functions
-            this.init = init;
-            this.getData = getData;
-            this.fillConditionValue = fillConditionValue;
-         
-         // initialization of the widget
-            function init(formData) {
-           
-           // send data to Jotform on change input
-                input.on('change', function() {
-                    JFCustomWidget.sendData(getData());
-                    JFCustomWidget.hideWidgetError();
-                }); 
-            }
+          function getData() {
+            return {
+              valid: true,
+              value: ""
+            };
+          }
+        }
 
-                // USED FOR TESTING
-                function getRandomInt(max) {
-                    return Math.floor(Math.random() * max);
-                }
-         
-                // fill the value set by conditions
-                function fillConditionValue(data) {
-                    var inputValue = data.value || '';
-                    input.val(inputValue);
-                    JFCustomWidget.hideWidgetError();
-                    validatePostcode(inputValue)
-                }
-
-                function validatePostcode(inputValue){
-                    var int_rand = getRandomInt(2);
-                    if(int_rand == 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-         
-                // get widget data
-                function getData() {
-                    var inputValue = input.val();
-                    var isValid = validatePostcode(inputValue)
-                    console.log("isValid", isValid)
-                    return {
-                        value: inputValue,
-                        valid: !!inputValue
-                    }
-                }
-            }
-        // always subscribe to ready event and implement widget related code
-        // inside callback function , it is the best practice while developing widgets
-        JFCustomWidget.subscribe("ready", function(data) {
-
-          var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
-          document.getElementById('labelText').innerHTML = label;
-          var widget = new postcodeValidator();
+        JFCustomWidget.subscribe("ready", function (data) {
+          var widget = new DynamicOptionsDropdown();
           widget.init(data);
 
-          JFCustomWidget.subscribe("submit", function() {
+          JFCustomWidget.subscribe("submit", function () {
             JFCustomWidget.sendSubmit(widget.getData());
           });
-          
-          JFCustomWidget.subscribe('populate', widget.fillConditionValue);
         });
-       
-        </script>
+      });
+    </script>
     </body>
 </html>
