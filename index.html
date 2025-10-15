@@ -73,11 +73,20 @@
         
         function DynamicOptionsDropdown() {
           const params = JFCustomWidget.getWidgetSettings();
+          console.log(params)
+          
           const delimiter =
             JFCustomWidget.getWidgetSetting("delimiter") ?? ", ";
-          const placeholder =
+
+            console.log(delimiter)
+          
+            const placeholder =
             JFCustomWidget.getWidgetSetting("placeholder") ?? "";
-          const sourceField = JFCustomWidget.getWidgetSetting("sourceField");
+
+            console.log(placeholder)
+          
+            const sourceField = JFCustomWidget.getWidgetSetting("sourceField");
+          
           const selectElement = document.getElementById(
               "dynamicOptionDropdown",
             );
