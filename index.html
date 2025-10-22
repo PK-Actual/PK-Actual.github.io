@@ -1,217 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <head>
+    <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+  </head>
+  <style></style>
+  <body>
+    <div id="reviewArea">
+    </div>
+    <script type="text/javascript">
+      function tableExampleForCleaningDepot() {
+        // get widget parameters if any using getWidgetSettings for all, or getWidgetSetting('name') for a specific one.
+        // const params = JFCustomWidget.getWidgetSettings();
 
-<style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Inter, sans-serif;
-      font-size: 16px;
-      color: #2c3345;
-    }
-
-    body.card-form-widget {
-      overflow: hidden;
-    }
-
-    .dropdown-container {
-      display: block;
-      position: relative;
-      max-height: 40px;
-      color: #2c3345;
-    }
-
-    .sqlDD {
-      max-width: 310px;
-    }
-
-    .sqlCard {
-      max-width: 99%;
-    }
-
-    select.form-dropdown {
-      display: block;
-      color: #2c3345;
-      width: 100%;
-      height: 40px;
-      font-family: inherit;
-      font-size: 1em;
-      padding: 0 1.875em 0 0.625em;
-      border-color: #b8bdc9;
-      border-radius: 4px;
-      border-width: 1px;
-      border-style: solid;
-      appearance: none;
-      -moz-appearance: none;
-      -webkit-appearance: none;
-      background: url("data:image/svg+xml,<svg height='10px' width='10px' viewBox='0 0 16 16' fill='%23000000' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") no-repeat;
-      background-position: calc(100% - 0.75rem) center !important;
-    }
-
-    #form-dropdown:hover {
-      border-color: rgba(46, 105, 255, 0.5);
-      box-shadow: 0 0 0 2px rgba(46, 105, 255, 0.25);
-    }
-  </style>
-
+        // exposed functions
+        this.init = init;
+        this.getData = getData;
+        const qid = "input_3"
         
-    </head>
-    <body>
-        <div id="main" class="dropdown-container">
-            <h3>This is my first widget.</h3>
-            <h3>NOT BHEDDD! GOOD SOIZEEE!</h3>
-            <span id="labelText"></span>
-            <select class="form-dropdown" id="dynamicOptionDropdown">
-      </select>
-        </div>
-<script type="text/javascript">
-      JFCustomWidgetUtils.domReady(function () {
+          JFCustomWidget.listenFromField(qid, 'change', function(value) {
+              console.log(`CHANGE EVENT: ${value}`)
+          })
+          JFCustomWidget.listenFromField(qid, 'keyup', function(value) {
+              console.log(`KEYUP EVENT: ${value}`)
+          })
         
-        
-        function DynamicOptionsDropdown() {
-          const params = JFCustomWidget.getWidgetSettings();
-          console.log(params)
-          
-          const delimiter =
-            JFCustomWidget.getWidgetSetting("delimiter") ?? ", ";
-
-            console.log(delimiter)
-          
-            const placeholder =
-            JFCustomWidget.getWidgetSetting("placeholder") ?? "";
-
-            console.log(placeholder)
-          
-            const sourceField = JFCustomWidget.getWidgetSetting("sourceField");
-          
-          const selectElement = document.getElementById(
-              "dynamicOptionDropdown",
-            );
-          const targetField = JFCustomWidget.getWidgetSetting("targetField");
-
-          const inputFieldSelect = document.getElementById("dynamicOptionDropdown");
-          let currentSourceValue;
-
-        inputFieldSelect.addEventListener("change", function(event){
-          console.log("inputFieldSelectChange", event);
-           JFCustomWidget.sendData(getData());
-          // const payload = [
-          //   {label: targetField, value: event.target.value}
-          // ];
-          // JFCustomWidget.setFieldsValueByLabel(payload)
-          const value_ = event.target.value
-          console.log({value_, targetField});
-          // JFCustomWidget.sendCalcValue({value: value_});
-          // JotForm.ignoreInsertionCondition = false;
-          JFCustomWidget.storeToField(value_, targetField, function(value) {
-                console.log("Successfully store field to :", targetField, value);
-          });
-          const keyUpEvent = new KeyboardEvent('keyup', {
-            key: 'Tab',
-            keyCode: 9,
-            code: 'Tab',
-            which: 9,
-            bubbles: true,
-            cancelable: true
-          });
-          
-          const data = {
-            type: 'keyup',
-            key: keyUpEvent.key,
-            keyCode: keyUpEvent.keyCode,
-            code: keyUpEvent.code,
-            which: keyUpEvent.which
-          };
-          window.top.postMessage(data, '*');
-          window.parent.postMessage(data, '*');
-          // window.parent.postMessage({ action: 'population-completed' }, '*');
-        })
-      
-          JFCustomWidget.listenFromField(sourceField, 'change', function(value) {
-            console.log("change", {value});
-
-            console.log({currentSourceValue});
-
-            if(value === currentSourceValue){
-              return
-            }
-            currentSourceValue = value;
-            handlePopulateEvent(value);
-            
-          });
-          
-          this.getData = getData;
-          this.init = init;
-          this.handlePopulateEvent = handlePopulateEvent;
-          this.selectElement = selectElement;
-
-          function init() {
-            // if(placeholder){
-            //   const defaultOption = document.createElement("option");
-            //   defaultOption.value = "";
-            //   defaultOption.textContent = placeholder;
-            //   selectElement.appendChild(defaultOption);
-            //   defaultOption.selected = true;
-            // }
-          }
-
-          function handlePopulateEvent(populateEventData) {
-            console.log("handlePopulateEvent");
-            if(!populateEventData){return}
-
-            console.log({populateEventData});
-
-            const docFragment = document.createDocumentFragment();
-            const splitValues = populateEventData.split(delimiter);
-
-            document.querySelectorAll('#dynamicOptionDropdown option').forEach(option => option.remove())
-
-            // let defaultOption
-            // if(placeholder){
-            //   defaultOption = document.createElement("option");
-            //   defaultOption.value = "";
-            //   defaultOption.textContent = placeholder;
-            //   defaultOption.selected = true;
-            //   selectElement.appendChild(defaultOption);
-            // }
-            if (Array.isArray(splitValues)) {
-              splitValues.forEach((optionText) => {
-                const option = document.createElement("option");
-                option.value = optionText;
-                option.textContent = optionText;
-                docFragment.appendChild(option);
-              });
-
-              selectElement.appendChild(docFragment);
-            }
-          }
-
-          function getData() {
-            console.log("getData");
-            console.log(selectElement.value);
-            return {
-              valid: true,
-              value: selectElement.value,
-            };
-          }
+        function getAllFormFields(){
+          console.log("Settings", JFCustomWidget.getWidgetSettings())
         }
 
-        JFCustomWidget.subscribe("ready", function (data) {
-          var widget = new DynamicOptionsDropdown();
-          widget.init();
+        // initialization of the widget
+        function init(formData) {
+          console.log("Hello world!");
+          getAllFormFields()
+        }
 
-          JFCustomWidget.subscribe("submit", function () {
-            JFCustomWidget.sendSubmit(widget.getData());
-          });
+        // get widget data
+        function getData() {
+          return {
+            valid: true,
+            value: "TEST"
+          };
+        }
+      }
 
-          // JFCustomWidget.subscribe("populate", function (data) {
-          //   widget.handlePopulateEvent(data.value);
-          // });
+      // always subscribe to ready event and implement widget related code
+      // inside callback function , it is the best practice while developing widgets
+      JFCustomWidget.subscribe("ready", function (data) {
+        var widget = new tableExampleForCleaningDepot();
+        widget.init(data);
+
+        JFCustomWidget.subscribe("submit", function () {
+          JFCustomWidget.sendSubmit(widget.getData());
         });
       });
     </script>
-    </body>
+  </body>
 </html>
