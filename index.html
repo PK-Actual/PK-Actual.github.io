@@ -59,11 +59,6 @@
                 });
             }
 
-            function init(widgetSettings) {
-                console.log("hello world", {widgetSettings});
-                console.log({params})
-            }
-
             function getData() {
                 return {
                     valid: true,
@@ -74,7 +69,6 @@
 
         JFCustomWidget.subscribe("ready", function (data) {
             var widget = new testWidget();
-            widget.init(data);
             console.log(widget.getAuthToken());
 
             JFCustomWidget.subscribe("submit", function () {
