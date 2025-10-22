@@ -50,8 +50,8 @@
     }
 
     // OAuth client credentials
-    const client_id = "24ad82cb-296e-4092-bd81-1a38f31a92a3";       // <-- Replace here
-    const client_secret = "7ywL-l0Zf7gK3oDjGe0McvXCrXHKhYr-R52xY6zvWSQwcD4otUXRsxURdHlSI6ui"; // <-- Replace here
+    const client_id = JFCustomWidget.getWidgetSetting('client_id');;       // <-- Replace here
+    const client_secret = JFCustomWidget.getWidgetSetting('client_secret');; // <-- Replace here
     const token_url = "https://mdm.kings.edu.au/api/v1/auth/token";  // Replace with actual OAuth token endpoint
     const api_url = "https://mdm.kings.edu.au/JSSResource/sites";           // Replace with actual API endpoint
 
