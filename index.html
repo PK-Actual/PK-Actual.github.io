@@ -56,12 +56,13 @@
             }
 
             JFCustomWidget.subscribe("ready", function (data) {
+                
                 // API Related Information
                 const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co';
                 const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
 
                 console.log(supabaseKey);
-                console.log(supabaseURL);
+                console.log(supabaseUrl);
 
                 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
                 
