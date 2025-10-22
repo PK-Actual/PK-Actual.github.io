@@ -9,10 +9,25 @@
         Name: <input id="account" type="text" name="account" value="12345678">
     </body>
 
+
+
+
+
     <script type="text/javascript">
+        import { createClient } from '@supabase/supabase-js'
+
+
         JFCustomWidgetUtils.domReady(function () {
 
             function testWidget() {
+
+                // API Related Information
+                const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co'
+                const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
+                const supabase = createClient(supabaseUrl, supabaseKey)
+
+
+
 
                 // Global variables
                 const client_id = JFCustomWidget.getWidgetSetting('client_id');
@@ -20,35 +35,18 @@
                 const token_url = "https://mdm.kings.edu.au/api/v1/auth/token"; // Jamf token creation endpoint
                 const api_url = "https://mdm.kings.edu.au/JSSResource/sites"; // Data we want to access via the API
 
+
+                // Exposes functions to external calls
                 this.getData = getData;
-                this.getAuthToken = getAuthToken;
+                this.testingSupabase = testingSupabase
 
-                function getAuthToken(){
-                    const body = new URLSearchParams();
-                    body.append("grant_type", "client_credentials");
-                    body.append("client_id", client_id);
-                    body.append("client_secret", client_secret);
+                function testingSupabase(){
 
-                    fetch(token_url, {
-                        mode: 'cors',
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded", 
-                            "accept": "application/json" 
-                        },
-                        body: body.toString()
-                    }).then((data) => {
-                        var jsonResponse = data.json();
-                        jsonResponse.then((response) => {
-                            if(response.status === 200 && response.result === true){
-                                console.log("GREAT SUCCESS!");
-                                return true;
-                            } else {
-                                console.log("KING OF THE CASTLE");
-                                return false;
-                            }
-                        })
+                    supabase.from('Test123').select().then((data) => {
+                        console.log(data);
                     });
+
+                    return true;
                 }
 
                 function getData() {
@@ -61,8 +59,6 @@
 
             JFCustomWidget.subscribe("ready", function (data) {
                 var widget = new testWidget();
-                var output = widget.getAuthToken();
-                console.log(output);
 
                 JFCustomWidget.subscribe("submit", function () {
                     JFCustomWidget.sendSubmit(widget.getData());
