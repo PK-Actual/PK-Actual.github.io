@@ -4,7 +4,6 @@
         <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     </head>
 
     <body>
@@ -17,7 +16,7 @@
 
             function testWidget() {
 
-                var supabase = null;
+                var supabaseClient = null;
 
                 // Global variables
                 const client_id = JFCustomWidget.getWidgetSetting('client_id');
@@ -32,16 +31,16 @@
                 this.setSupabaseObject = setSupabaseObject;
 
                 function setSupabaseObject(supabaseObject){
-                    this.supabase = supabaseObject;
+                    this.supabaseClient = supabaseObject;
                 }
 
                 function testingSupabase(){
 
-                    this.supabase
+                    this.supabaseClient
                         .from('Test123')
-                        .select()
-                        .then((data) => {
-                            console.log(data);
+                        .select('*')
+                        .then((data, error) => {
+                            console.log("Content from supabase table: ", data);
                         });
 
                     return true;
