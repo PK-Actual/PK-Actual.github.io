@@ -19,21 +19,6 @@
 </body>
   
   <script>
-    // Manifest for Jotform widget builder (not used at runtime)
-    const manifest = {
-      name: "API Data Fetcher with OAuth",
-      description: "Fetches data from OAuth API and updates inputs.",
-      icon: "https://cdn.jotfor.ms/assets/imgs/w-icon.png",
-      fields: [],
-      js_files: [],
-      css_files: [],
-      height: 220,
-      sandbox: true
-    };
-    
-    if (typeof window !== "undefined" && window.parent && window.parent.setManifest) {
-      window.parent.setManifest(manifest);
-    }
 
     window.addEventListener("DOMContentLoaded", () => {
         console.log("DOM Loaded - Code executed!")
