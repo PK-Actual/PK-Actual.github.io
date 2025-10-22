@@ -16,11 +16,7 @@
 
             function testWidget() {
 
-                // API Related Information
-                const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co'
-                const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
-                
-                const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+                var supabase = null;
 
 
                 // Global variables
@@ -32,16 +28,21 @@
 
                 // Exposes functions to external calls
                 this.getData = getData;
-                this.testingSupabase = testingSupabase
+                this.testingSupabase = testingSupabase;
+                this.setSupabaseObject = setSupabaseObject;
+
+                function setSupabaseObject(supabaseObject){
+                    this.supabase = supabaseObject;
+                }
 
                 function testingSupabase(){
 
-                    supabase
+                    this.supabase
                         .from('Test123')
                         .select()
                         .then((data) => {
-                        console.log(data);
-                    });
+                            console.log(data);
+                        });
 
                     return true;
                 }
@@ -55,8 +56,18 @@
             }
 
             JFCustomWidget.subscribe("ready", function (data) {
+                // API Related Information
+                const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co';
+                const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
+
+                console.log(supabaseKey);
+                console.log(supabaseURL);
+
+                const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+                
                 var widget = new testWidget();
-                widget.testingSupabase();
+                widget.setSupabaseObject(supabase);
+
 
                 JFCustomWidget.subscribe("submit", function () {
                     JFCustomWidget.sendSubmit(widget.getData());
