@@ -34,14 +34,18 @@
                     this.supabaseClient = supabaseObject;
                 }
 
-                function testingSupabase(){
+                async function testingSupabase(){
 
-                    this.supabaseClient
-                        .from('Test123')
-                        .select('*')
-                        .then((data, error) => {
-                            console.log("Content from supabase table: ", data);
-                        });
+                    let { data, error } = await supabaseClient.from('Test123').select('*');
+
+                    console.log("Content from supabase table: ", data);
+
+                    // this.supabaseClient
+                    //     .from('Test123')
+                    //     .select('*')
+                    //     .then((data, error) => {
+                    //         console.log("Content from supabase table: ", data);
+                    //     });
 
                     return true;
                 }
