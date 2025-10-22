@@ -17,124 +17,73 @@
 <body>
 </body>
 
-<script>
-    // Global Vars
-    const client_id = "";       // <-- Replace here
-    const client_secret = ""; // <-- Replace here
-    const token_url = "https://mdm.kings.edu.au/api/v1/auth/token";  // Replace with actual OAuth token endpoint
-    const api_url = "https://mdm.kings.edu.au/JSSResource/sites";           // Replace with actual API endpoint
-    
-    
-    
-    
-    window.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM Loaded - Code executed!")
-    // Build UI
-    const container = document.createElement("div");
-    container.innerHTML = `
-    <label>Name: <input type="text" id="nameField" /></label><br/>
-    <label>Email: <input type="text" id="emailField" /></label><br/>
-    <label>Status: <input type="text" id="statusField" /></label>
-    `;
-    document.body.appendChild(container);
+<script type="text/javascript">
+    JFCustomWidgetUtils.domReady(function () {
 
-    // Update Jotform field values
-    function updateFormValue() {
-        const value = {
-            name: document.getElementById("nameField").value,
-            email: document.getElementById("emailField").value,
-            status: document.getElementById("statusField").value
-        };
-        if (window.JFCustomWidget) {
-            JFCustomWidget.setValue(value);
+        function testWidget() {
+
+            // Global variables
+            const client_id = JFCustomWidget.getWidgetSetting('client_id');
+            const client_secret = JFCustomWidget.getWidgetSetting('client_secret');
+            const token_url = "https://mdm.kings.edu.au/api/v1/auth/token"; // Jamf token creation endpoint
+            const api_url = "https://mdm.kings.edu.au/JSSResource/sites"; // Data we want to access via the API
+
+            this.getData = getData;
+            this.init = init;
+
+            function getAuthToken(){
+                const body = new URLSearchParams();
+                body.append("grant_type", "client_credentials");
+                body.append("client_id", client_id);
+                body.append("client_secret", client_secret);
+
+                fetch(token_url, {
+                    mode: 'cors',
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded", 
+                        "accept": "application/json" 
+                    },
+                    body: body.toString()
+                }).then((data) => {
+                    var jsonResponse = data.json();
+                    jsonResponse.then((response) => {
+                        if(response.status === 200 && response.result === true){
+                            console.log("GREAT SUCCESS!");
+                            return true;
+                        } else {
+                            console.log("KING OF THE CASTLE");
+                            return false;
+                        }
+                    })
+                });
+            }
+
+            function init(widgetSettings) {
+                console.log("hello world", {widgetSettings});
+                console.log({params})
+            }
+
+            function getData() {
+                return {
+                    valid: true,
+                    value: ""
+                };
+            }
         }
-    }
 
-    // Parse response from API into useful content
-    function parseXMLResponse(xmlResponse) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xmlResponse, "application/xml");
-        console.log(parser);
-        console.log(doc);
-    }
+        JFCustomWidget.subscribe("ready", function (data) {
+            var widget = new testWidget();
+            widget.init(data);
+            console.log(widget.getAuthToken());
 
-
-
-    // Function to get OAuth token
-    async function getToken() {
-        const body = new URLSearchParams();
-        body.append("grant_type", "client_credentials");
-        body.append("client_id", client_id);
-        body.append("client_secret", client_secret);
-
-        const response = await fetch(token_url, {
-            mode: 'cors',
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded", "accept": "application/json" },
-            body: body.toString()
+            JFCustomWidget.subscribe("submit", function () {
+                JFCustomWidget.sendSubmit(widget.getData());
+            });
         });
-
-        if (!response.ok) {
-            throw new Error(`Token request failed: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        
-        return data.access_token;
-    }
-
-    // Function to fetch user data using the token
-    async function fetchUserData(token) {
-    const response = await fetch(api_url, {
-        headers: { Authorization: `Bearer ${token}` }
     });
-        if (!response.ok) {
-            throw new Error(`API request failed: ${response.statusText}`);
-        }
-   
-    return response.json();
-    }
-
-    // Main function to get token then fetch user data
-    async function fetchData() {
-    try {
-        const token = await getToken();
-        const userData = await fetchUserData(token);
-
-        console.log(userData)
-
-        // Assuming userData includes name, email, status
-
-        // document.getElementById("nameField").value = userData.name || "";
-        // document.getElementById("emailField").value = userData.email || "";
-        // document.getElementById("statusField").value = userData.status || "";
-
-        // updateFormValue();
-    } catch (err) {
-        console.error("Fetch error:", err);
-        document.getElementById("statusField").value = "Error fetching data";
-    }
-    }
-
-    // Listen for manual input changes
-    ['nameField', 'emailField', 'statusField'].forEach(id => {
-    document.getElementById(id).addEventListener("input", updateFormValue);
-    });
-
-    fetchData();
-
-    JFCustomWidget.subscribe("ready", () => {
-        JFCustomWidget.setHeight(220);
-        client_id = JFCustomWidget.getWidgetSetting('client_id');       // <-- Replace here
-        client_secret = JFCustomWidget.getWidgetSetting('client_secret'); // <-- Replace here
-
-        console.log(client_id);
-        console.log(client_secret);
-
-    });
-
-});
-
 </script>
+
+
 </head>
 </html>
