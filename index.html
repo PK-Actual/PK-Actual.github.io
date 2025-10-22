@@ -40,12 +40,12 @@
 
                     console.log("Content from supabase table: ", data);
 
-                    // this.supabaseClient
-                    //     .from('Test123')
-                    //     .select('*')
-                    //     .then((data, error) => {
-                    //         console.log("Content from supabase table: ", data);
-                    //     });
+                    this.supabaseClient
+                        .from('Test123')
+                        .select('*')
+                        .then((data, error) => {
+                            console.log("Content from supabase table: ", data);
+                        });
 
                     return true;
                 }
