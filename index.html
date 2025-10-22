@@ -57,6 +57,9 @@
 
     // Function to get OAuth token
     async function getToken() {
+      console.log(client_id);
+      console.log(client_secret);
+      
         const body = new URLSearchParams();
         body.append("grant_type", "client_credentials");
         body.append("client_id", client_id);
