@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>API Data Fetcher Widget</title>
+  <meta charset="UTF-8" />
+  <title>API Data Fetcher Widget with OAuth</title>
   <style>
     body {
       font-family: sans-serif;
@@ -15,26 +15,23 @@
     }
   </style>
   <script>
-    // Jotform widget manifest
+    // Manifest for Jotform widget builder (not used at runtime)
     const manifest = {
-      name: "API Data Fetcher",
-      description: "Fetches data from an API and updates input fields.",
+      name: "API Data Fetcher with OAuth",
+      description: "Fetches data from OAuth API and updates inputs.",
       icon: "https://cdn.jotfor.ms/assets/imgs/w-icon.png",
       fields: [],
       js_files: [],
       css_files: [],
-      height: 200,
+      height: 220,
       sandbox: true
     };
-
-    // Export manifest if running in widget builder (not used at runtime)
     if (typeof window !== "undefined" && window.parent && window.parent.setManifest) {
       window.parent.setManifest(manifest);
     }
 
-    // Widget logic
     window.addEventListener("DOMContentLoaded", () => {
-      // Create UI
+      // Build UI
       const container = document.createElement("div");
       container.innerHTML = `
         <label>Name: <input type="text" id="nameField" /></label><br/>
@@ -43,7 +40,7 @@
       `;
       document.body.appendChild(container);
 
-      // Send data to main form
+      // Update Jotform field values
       function updateFormValue() {
         const value = {
           name: document.getElementById("nameField").value,
@@ -55,40 +52,75 @@
         }
       }
 
-      // Fetch data from external API
+      // OAuth client credentials
+      const client_id = "24ad82cb-296e-4092-bd81-1a38f31a92a3";       // <-- Replace here
+      const client_secret = "7ywL-l0Zf7gK3oDjGe0McvXCrXHKhYr-R52xY6zvWSQwcD4otUXRsxURdHlSI6ui"; // <-- Replace here
+      const token_url = "https://mdm.kings.edu.au/v1/auth/token";  // Replace with actual OAuth token endpoint
+      const api_url = "https://mdm.kings.edu.au";           // Replace with actual API endpoint
+
+      // Function to get OAuth token
+      async function getToken() {
+        const body = new URLSearchParams();
+        body.append("grant_type", "client_credentials");
+        body.append("client_id", client_id);
+        body.append("client_secret", client_secret);
+
+        const response = await fetch(token_url, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body.toString()
+        });
+
+        if (!response.ok) {
+          throw new Error(`Token request failed: ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data.access_token;
+      }
+
+      // Function to fetch user data using the token
+      async function fetchUserData(token) {
+        const response = await fetch(api_url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.statusText}`);
+        }
+        return response.json();
+      }
+
+      // Main function to get token then fetch user data
       async function fetchData() {
         try {
-          const response = await fetch('https://api.example.com/user'); // Replace with real API
-          const data = await response.json();
+          const token = await getToken();
+          const userData = await fetchUserData(token);
 
-          document.getElementById("nameField").value = data.name || "";
-          document.getElementById("emailField").value = data.email || "";
-          document.getElementById("statusField").value = data.status || "";
+          // Assuming userData includes name, email, status
+          document.getElementById("nameField").value = userData.name || "";
+          document.getElementById("emailField").value = userData.email || "";
+          document.getElementById("statusField").value = userData.status || "";
 
           updateFormValue();
-        } catch (error) {
-          console.error('API fetch error:', error);
-          document.getElementById("statusField").value = 'Error fetching data';
+        } catch (err) {
+          console.error("Fetch error:", err);
+          document.getElementById("statusField").value = "Error fetching data";
         }
       }
 
-      // Input listeners
+      // Listen for manual input changes
       ['nameField', 'emailField', 'statusField'].forEach(id => {
-        document.getElementById(id).addEventListener('input', updateFormValue);
+        document.getElementById(id).addEventListener("input", updateFormValue);
       });
 
-      // Init
       fetchData();
 
-      // Resize widget and ready
       if (window.JFCustomWidget) {
         JFCustomWidget.subscribe("ready", () => {
-          JFCustomWidget.setHeight(200);
+          JFCustomWidget.setHeight(220);
         });
       }
     });
   </script>
 </head>
-<body>
-</body>
+<body></body>
 </html>
