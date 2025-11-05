@@ -7,9 +7,9 @@
     </head>
 
     <body>
-        Student Name: <input id="name" type="text" name="name" value="" placeholder="John Smith"> <br/>
-        Student ID: <input id="sid" type="text" name="sid" value="" placeholder="John Smith"> <br/>
-        Student Email: <input id="name" type="text" name="name" value="John Smith"> <br/>
+        Student Name: <input id="name" type="text" name="name" value="" placeholder="John Smith">
+        Student ID: <input id="sid" type="text" name="sid" value="" placeholder="John Smith">
+        Student Email: <input id="name" type="text" name="name" value="" placeholder="jsmith@student.kings.edu.au">
     </body>
 
     <script type="text/javascript">
@@ -18,7 +18,6 @@
 
             function testWidget() {
 
-                var supabase = null;
                 var appWriteClient = null;
 
                 // Global variables
@@ -30,17 +29,8 @@
 
                 // Exposes functions to external calls
                 this.getData = getData;
-                this.testingSupabase = testingSupabase;
-                this.setSupabaseObject = setSupabaseObject;
                 this.setAppWriteClient = setAppWriteClient;
 
-
-
-
-
-                function setSupabaseObject(supabaseObject){
-                    this.supabase = supabaseObject;
-                }
 
                 function setAppWriteClient(appWriteClient){
                     this.appWriteClient = appWriteClient;
@@ -51,18 +41,6 @@
                 }
 
 
-                // function testingSupabase(){
-
-                //     this.supabase
-                //         .from('Test123')
-                //         .select()
-                //         .then((data) => {
-                //             console.log(data);
-                //         });
-
-                //     return true;
-                // }
-
                 function getData() {
                     return {
                         valid: true,
@@ -72,21 +50,18 @@
             }
 
             JFCustomWidget.subscribe("ready", function (data) {
-                
-                // API Related Information
-                // const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co';
-                // const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
 
                 // Appwrite API Info
                 const appWriteAPIKey = JFCustomWidget.getWidgetSetting('appwrite_api_key');
                 const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
-                const appWriteEndpoint = JFCustomWidget.getWidgetSetting('');
+                const appWriteEndpoint = JFCustomWidget.getWidgetSetting('appwrite_endpoint');
+                const appWriteDatabaseID = JFCustomWidget.getWidgetSetting('appwrite_database_id');
 
                 const client123 = new Appwrite.Client();
                 client123
                     .setEndpoint(appWriteEndpoint)
                     .setProject(appWriteProjectID);
-                
+
                 // const account123 = new AppWrite.Account(client);
                 // const tablesDB = new AppWrite.TablesDB(client);
 
@@ -99,11 +74,10 @@
                 // })
 
                 // const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-                
+
                 var widget = new testWidget();
                 // widget.setSupabaseObject(supabase);
                 widget.setAppWriteClient(client123);
-
 
                 JFCustomWidget.subscribe("submit", function () {
                     JFCustomWidget.sendSubmit(widget.getData());
