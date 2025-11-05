@@ -42,6 +42,8 @@
 
             JFCustomWidget.subscribe("ready", function (data) {
 
+                console.log("1");
+
                 // Appwrite API Info
                 const appWriteAPIKey = JFCustomWidget.getWidgetSetting('appwrite_api_key');
                 const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
@@ -49,22 +51,27 @@
                 const appWriteDatabaseID = JFCustomWidget.getWidgetSetting('appwrite_database_id');
                 const appWriteTableID = JFCustomWidget.getWidgetSetting('appwrite_table_id');
 
-
+                
                 const client123 = new Appwrite.Client();
                 client123
                     .setEndpoint(appWriteEndpoint)
-                    .setProject(appWriteProjectID);
+                    .setProject(appWriteProjectID)
+                    .setKey(appWriteAPIKey);
 
-                const tablesDB = new Appwrite.TablesDB(client123);
+                console.log("2");
 
-                console.log("WORKING BELOW - 1");
-                console.log(tablesDB);
-                console.log("WORKING ABOVE - 1");
+                const tablesDB123 = new Appwrite.TablesDB(client123);
 
-                const promise = tablesDB.listRows({
-                    databaseId: appWriteDatabaseID,
-                    tableId: appWriteTableID
-                });
+                console.log("3");
+
+                console.log(tablesDB123);
+
+                console.log("4");
+
+                // const promise = tablesDB123.listRows({
+                //     databaseId: appWriteDatabaseID,
+                //     tableId: appWriteTableID
+                // });
 
                 // const promise = tablesDB.listRows({
                 //     databaseId: 
