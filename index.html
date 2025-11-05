@@ -51,7 +51,6 @@
                 const appWriteDatabaseID = JFCustomWidget.getWidgetSetting('appwrite_database_id');
                 const appWriteTableID = JFCustomWidget.getWidgetSetting('appwrite_table_id');
 
-                
                 const client123 = new Appwrite.Client();
                 client123
                     .setEndpoint(appWriteEndpoint)
@@ -60,7 +59,7 @@
 
                 console.log("2");
 
-                const tablesDB123 = new Appwrite.TablesDB(client123);
+                const tablesDB = new Appwrite.TablesDB(client123);
 
                 console.log("3");
 
@@ -68,20 +67,13 @@
 
                 console.log("4");
 
-                // const promise = tablesDB123.listRows({
-                //     databaseId: appWriteDatabaseID,
-                //     tableId: appWriteTableID
-                // });
-
-                // const promise = tablesDB.listRows({
-                //     databaseId: 
-                // })
-
-                // const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
                 var widget = new testWidget();
-                // widget.setSupabaseObject(supabase);
+
+                console.log("5");
+
                 widget.setAppWriteClient(client123);
+
+                console.log("6");
 
                 JFCustomWidget.subscribe("submit", function () {
                     JFCustomWidget.sendSubmit(widget.getData());
