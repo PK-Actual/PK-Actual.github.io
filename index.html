@@ -47,7 +47,8 @@
                 const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
                 const appWriteEndpoint = JFCustomWidget.getWidgetSetting('appwrite_endpoint');
                 const appWriteDatabaseID = JFCustomWidget.getWidgetSetting('appwrite_database_id');
-                
+                const appWriteTableID = JFCustomWidget.getWidgetSetting('appwrite_table_id');
+
 
                 const client123 = new Appwrite.Client();
                 client123
@@ -62,8 +63,8 @@
 
                 const promise = tablesDB.listRows({
                     databaseId: appWriteDatabaseID,
-                    tableId: 
-                })
+                    tableId: appWriteTableID
+                });
 
                 // const promise = tablesDB.listRows({
                 //     databaseId: 
