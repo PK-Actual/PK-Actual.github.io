@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+        <script src="https://cdn.jotfor.ms/s/umd/latest/for-custom-widgets.js"></script> <!-- JotForm Widgets-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script> <!-- App Write SDK -->
     </head>
 
     <body>
         Name: <input id="account" type="text" name="account" value="12345678">
-        Unluggy Uce
     </body>
 
     <script type="text/javascript">
@@ -16,39 +15,51 @@
         JFCustomWidgetUtils.domReady(function () {
 
             function testWidget() {
-                var supabaseClient = null;
+
+                var supabase = null;
+                var appWriteClient = null;
 
                 // Global variables
-                const client_id = JFCustomWidget.getWidgetSetting('client_id');
-                const client_secret = JFCustomWidget.getWidgetSetting('client_secret');
-                const token_url = "https://mdm.kings.edu.au/api/v1/auth/token"; // Jamf token creation endpoint
-                const api_url = "https://mdm.kings.edu.au/JSSResource/sites"; // Data we want to access via the API
+                // const client_id = JFCustomWidget.getWidgetSetting('client_id');
+                // const client_secret = JFCustomWidget.getWidgetSetting('client_secret');
+                // const token_url = "https://mdm.kings.edu.au/api/v1/auth/token"; // Jamf token creation endpoint
+                // const api_url = "https://mdm.kings.edu.au/JSSResource/sites"; // Data we want to access via the API
 
 
                 // Exposes functions to external calls
                 this.getData = getData;
                 this.testingSupabase = testingSupabase;
                 this.setSupabaseObject = setSupabaseObject;
+                this.setAppWriteClient = setAppWriteClient;
+
+
+
+
 
                 function setSupabaseObject(supabaseObject){
-                    this.supabaseClient = supabaseObject;
+                    this.supabase = supabaseObject;
                 }
 
-                async function testingSupabase(){
-
-                    // let { data, error } = await this.supabaseClient.from('Test123').select('*');
-
-                    // console.log("Content from supabase table: ", data);
-
-                    this.supabaseClient
-                        .from('Test123')
-                        .select('*')
-                        .then((data, error) => {
-                            console.log("Content from supabase table: ", data);
-                        });
-
-                    return true;
+                function setAppWriteClient(appWriteClient){
+                    this.appWriteClient = appWriteClient;
                 }
+
+                function testingAppWrite(){
+
+                }
+
+
+                // function testingSupabase(){
+
+                //     this.supabase
+                //         .from('Test123')
+                //         .select()
+                //         .then((data) => {
+                //             console.log(data);
+                //         });
+
+                //     return true;
+                // }
 
                 function getData() {
                     return {
@@ -59,20 +70,39 @@
             }
 
             JFCustomWidget.subscribe("ready", function (data) {
-
+                
                 // API Related Information
-                const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co';
-                const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
+                // const supabaseUrl = 'https://wqifzlurfbhlyyjyouyt.supabase.co';
+                // const supabaseKey = JFCustomWidget.getWidgetSetting('supabase_key');
+                
 
-                const { createClient } = supabase;
+                // Appwrite API Info
+                const appWriteAPIKey = JFCustomWidget.getWidgetSetting('appwrite_api_key');
+                const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
+                const appWriteEndpoint = JFCustomWidget.getWidgetSetting('');
 
-                const supabaseClient = createClient(supabaseUrl, supabaseKey);
-                console.log("Supabase Instance", supabaseClient);
+                const client123 = new AppWrite.Client();
+                client
+                    .setEndpoint(appWriteEndpoint)
+                    .setProject(appWriteProjectID);
+                
+                const account123 = new AppWrite.Account(client);
+                const tablesDB = new AppWrite.TablesDB(client);
 
+                console.log(client123);
+                console.log(account123);
+                console.log(tablesDB);
+
+                // const promise = tablesDB.listRows({
+                //     databaseId: 
+                // })
+
+                // const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+                
                 var widget = new testWidget();
-                widget.setSupabaseObject(supabaseClient);
+                // widget.setSupabaseObject(supabase);
+                widget.setAppWriteClient(client123);
 
-                var data = widget.testingSupabase();
 
                 JFCustomWidget.subscribe("submit", function () {
                     JFCustomWidget.sendSubmit(widget.getData());
