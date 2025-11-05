@@ -51,6 +51,8 @@
 
             JFCustomWidget.subscribe("ready", function (data) {
 
+                console.log(JFCustomWidgetUtils.getFormDomain());
+
                 // Appwrite API Info
                 const appWriteAPIKey = JFCustomWidget.getWidgetSetting('appwrite_api_key');
                 const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
