@@ -9,7 +9,7 @@
     <body>
         Student Name: <input id="name" type="text" name="name" value="" placeholder="John Smith"> <br/>
         Student ID: <input id="sid" type="text" name="sid" value="" placeholder="John Smith"> <br/>
-        Student Email: <input id="name" type="text" name="name" value="John Smith"> <br/>
+        Student Email: <input id="name" type="text" name="name" value="" placeholder="smith_jo@studentkings.edu.au"> <br/>
     </body>
 
     <script type="text/javascript">
@@ -20,17 +20,9 @@
 
                 var appWriteClient = null;
 
-                // Global variables
-                // const client_id = JFCustomWidget.getWidgetSetting('client_id');
-                // const client_secret = JFCustomWidget.getWidgetSetting('client_secret');
-                // const token_url = "https://mdm.kings.edu.au/api/v1/auth/token"; // Jamf token creation endpoint
-                // const api_url = "https://mdm.kings.edu.au/JSSResource/sites"; // Data we want to access via the API
-
-
                 // Exposes functions to external calls
                 this.getData = getData;
                 this.setAppWriteClient = setAppWriteClient;
-
 
                 function setAppWriteClient(appWriteClient){
                     this.appWriteClient = appWriteClient;
@@ -39,7 +31,6 @@
                 function testingAppWrite(){
                     console.log("HELLO WORLD");
                 }
-
 
                 function getData() {
                     return {
@@ -51,26 +42,28 @@
 
             JFCustomWidget.subscribe("ready", function (data) {
 
-                console.log(JFCustomWidgetUtils.getFormDomain());
-
                 // Appwrite API Info
                 const appWriteAPIKey = JFCustomWidget.getWidgetSetting('appwrite_api_key');
                 const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
                 const appWriteEndpoint = JFCustomWidget.getWidgetSetting('appwrite_endpoint');
                 const appWriteDatabaseID = JFCustomWidget.getWidgetSetting('appwrite_database_id');
+                
 
                 const client123 = new Appwrite.Client();
                 client123
                     .setEndpoint(appWriteEndpoint)
                     .setProject(appWriteProjectID);
 
-                // const account123 = new AppWrite.Account(client);
-                // const tablesDB = new AppWrite.TablesDB(client);
-                console.log("WORKING BELOW?");
-                console.log(client123);
-                console.log("WORKING ABOVE?");
-                // console.log(account123);
-                // console.log(tablesDB);
+                const tablesDB = new AppWrite.TablesDB(client);
+
+                console.log("WORKING BELOW - 1");
+                console.log(tablesDB);
+                console.log("WORKING ABOVE - 1");
+
+                const promise = tablesDB.listRows({
+                    databaseId: appWriteDatabaseID,
+                    tableId: 
+                })
 
                 // const promise = tablesDB.listRows({
                 //     databaseId: 
