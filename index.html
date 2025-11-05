@@ -12,8 +12,6 @@
 
     <script type="text/javascript">
 
-        import { Client, Databases, Account, Storage } from "appwrite";
-
         JFCustomWidgetUtils.domReady(function () {
 
             function testWidget() {
@@ -85,17 +83,17 @@
                 const appWriteProjectID = JFCustomWidget.getWidgetSetting('appwrite_project_id');
                 const appWriteEndpoint = JFCustomWidget.getWidgetSetting('');
 
-                const client123 = new AppWrite.Client();
+                const client123 = new Appwrite.Client();
                 client
                     .setEndpoint(appWriteEndpoint)
                     .setProject(appWriteProjectID);
                 
-                const account123 = new AppWrite.Account(client);
-                const tablesDB = new AppWrite.TablesDB(client);
+                // const account123 = new AppWrite.Account(client);
+                // const tablesDB = new AppWrite.TablesDB(client);
 
                 console.log(client123);
-                console.log(account123);
-                console.log(tablesDB);
+                // console.log(account123);
+                // console.log(tablesDB);
 
                 // const promise = tablesDB.listRows({
                 //     databaseId: 
