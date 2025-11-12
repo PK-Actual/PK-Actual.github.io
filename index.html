@@ -1,14 +1,48 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    </head>
-<style>
-      /* input 
-      styles */
-        #sourceString {
+  <head>
+    <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+    <script src="https://demo.jotform.com/s/umd/f5e61623280/for-formuser.js"></script>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+  <script>
+(function() {
+    var widget, initAddressFinder = function() {
+        widget = new AddressFinder.Widget(
+            document.getElementById('address_line_1'),
+            'ADDRESSFINDER_DEMO_KEY',
+            'AU', {
+                "address_params": {
+                    "source": "gnaf,paf"
+                }
+            }
+        );
+
+        widget.on('address:select', function(fullAddress, metaData) {
+            document.getElementById('address_line_1').value = metaData.address_line_1;
+            document.getElementById('address_line_2').value = metaData.address_line_2 || '';
+            document.getElementById('suburb').value = metaData.locality_name;
+            document.getElementById('state').value = metaData.state_territory;
+            document.getElementById('postcode').value = metaData.postcode;
+        });
+    };
+
+    function downloadAddressFinder() {
+        var script = document.createElement('script');
+        script.src = 'https://api.addressfinder.io/assets/v3/widget.js';
+        script.async = true;
+        script.onload = initAddressFinder;
+        document.body.appendChild(script);
+    };
+
+    document.addEventListener('DOMContentLoaded', downloadAddressFinder);
+})();
+</script>
+  </head>
+  <style>
+        input {
           height: 2.5em;
           min-width: 100%;
           max-width: 100%;
@@ -25,83 +59,58 @@
           text-align: left;
           box-sizing: border-box;
         }
-      </style>
-    <body>
-        <p>UNLUGGY UCE</p>
-    	<span id="labelText">TEST LABEL</span>
-        <input type="text" id="sourcePostCode" class="form-textbox" value="">
-        <script type="text/javascript">
-        
-        var input = $('#sourcePostCode');
 
-        function postcodeValidator() {
-         // exposed functions
-            this.init = init;
-            this.getData = getData;
-            this.fillConditionValue = fillConditionValue;
-         
-         // initialization of the widget
-            function init(formData) {
-           
-           // send data to Jotform on change input
-                input.on('change', function() {
-                    JFCustomWidget.sendData(getData());
-                    JFCustomWidget.hideWidgetError();
-                }); 
-            }
-         
-                 // fill the value set by conditions
-                 function fillConditionValue(data) {
-                   var inputValue = data.value || '';
-                   input.val(inputValue);
-                   JFCustomWidget.hideWidgetError();
-                  validatePostcode(inputValue)
-                 }
+  </style>
+  <body>
+    <div id="addressArea" style="display:flex; flex-direction: column; gap:1rem;">
+        <input type="text" id="address_line_1" placeholder="Start typing your address here..." />
+        <input type="text" id="address_line_2" placeholder="Address line 2" readonly />
+        <input type="text" id="suburb" placeholder="Suburb" readonly/>
+        <input type="text" id="state" placeholder="State" readonly/>
+        <input type="text" id="postcode" placeholder="Postcode" readonly/>
 
-                 function validatePostcode(inputValue){
-                  fetch(`http://localhost:3000`)
-                  .then((data) => {
-                    var bodyJson = data.json();
-                    bodyJson.then((resultObject) => {
-                      if(resultObject.status === 200 && resultObject.result === true){
-                        JFCustomWidget.hideWidgetError();
-                        return true
-                      }
-                      else{
-                        JFCustomWidget.showWidgetError("The postcode is invalid.");
-                        return false;
-                      }
-                    })
-                })
-                 }
-         
-                 // get widget data
-                 function getData() {
-                   var inputValue = input.val();
-                   var isValid = validatePostcode(inputValue)
-                   console.log("isValid", isValid)
-                    return {
-                      value: inputValue,
-                      valid: !!inputValue
-                   }
-                   }
-            }
-        // always subscribe to ready event and implement widget related code
-        // inside callback function , it is the best practice while developing widgets
-        JFCustomWidget.subscribe("ready", function(data) {
+    </div>
+    <script type="text/javascript">
+      function AddressFinderExample() {
+        // exposed functions
+        this.init = init;
+        this.getData = getData;
 
-          var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
-          document.getElementById('labelText').innerHTML = label;
-          var widget = new postcodeValidator();
-          widget.init(data);
+        function init(formData) {
+          console.log("widget init");
+        }
 
-          JFCustomWidget.subscribe("submit", function() {
-            JFCustomWidget.sendSubmit(widget.getData());
-          });
-          
-          JFCustomWidget.subscribe('populate', widget.fillConditionValue);
+        function getData() {
+
+            const address_line_1 = document.getElementById('address_line_1').value;
+            const address_line_2 = document.getElementById('address_line_2').value;
+            const suburb = document.getElementById('suburb').value;
+            const state = document.getElementById('state').value;
+            const postcode = document.getElementById('postcode').value;
+
+          return {
+            valid: true,
+            value: JSON.stringify({
+                address_line_1,
+                address_line_2,
+                suburb,
+                state,
+                postcode
+            })
+          };
+        }
+      }
+
+      // always subscribe to ready event and implement widget related code
+      // inside callback function , it is the best practice while developing widgets
+      JFCustomWidget.subscribe("ready", function (data) {
+        var widget = new AddressFinderExample();
+        widget.init(data);
+
+        JFCustomWidget.subscribe("submit", function () {
+          JFCustomWidget.sendSubmit(widget.getData());
         });
-       
-        </script>
-    </body>
+      });
+    </script>
+  </body>
 </html>
