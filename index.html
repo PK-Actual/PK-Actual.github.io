@@ -10,6 +10,7 @@
   <script>
 (function() {
     var widget, initAddressFinder = function() {
+
         widget = new AddressFinder.Widget(
             document.getElementById('address_line_1'),
             'ADDRESSFINDER_DEMO_KEY',
@@ -33,7 +34,12 @@
         var script = document.createElement('script');
         script.src = 'http://localhost:3000';
         script.async = true;
-        script.onload = initAddressFinder;
+        script.onload = function() {
+          console.log("Script loaded successfully from:", script.src);
+          initAddressFinder;
+        }
+          
+          
         document.body.appendChild(script);
     };
 
