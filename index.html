@@ -22,8 +22,8 @@
 
         widget.on('address:select', function(fullAddress, metaData) {
             document.getElementById('address_line_1').value = metaData.address_line_1;
-            document.getElementById('address_line_2').value = metaData.address_line_2 || '';
-            document.getElementById('suburb').value = metaData.locality_name;
+            document.getElementById('address_line_2').value = metaData.address_line_2 || 'THIS';
+            document.getElementById('suburb').value = metaData.tableId;
             document.getElementById('state').value = metaData.state_territory;
             document.getElementById('postcode').value = metaData.postcode;
         });
